@@ -49,7 +49,7 @@ router.get('/api/puppy/:id', function(req, res, next){
 //test post in curl
 // curl --data "name=Test&breed=test&age=7&sex=female" http://127.0.0.1:3000/api/puppies
 router.post('/api/puppies', function(req, res, next){
-  db.none("insert into pups(name, breed, age, sex) values($1, $2, $3, $4)", [req.body.name, req.body.breed, req.body.age, req.body.sex])
+  db.none("insert into pups(name, breed, age, sex) values(${name}, ${breed}, ${age}, ${sex})", req.body)
   .then(function (){
     res.status(200)
       .json({
@@ -86,7 +86,7 @@ router.post('/api/puppies', function(req, res, next){
 // curl -X PUT -d column=name -d value=john http://127.0.0.1:3000/api/puppy/1
 router.put('/api/puppy/:id', function(req, res, next){
   // console.log(req.body)
-  db.none('update pups set $1^=$2 where id=$3', [req.body.column, req.body.value, req.params.id])
+  db.none('update pups set $1~=$2 where id=$3', [req.body.column, req.body.value, req.params.id])
   .then(function (data){
     res.status(200)
       .json({
